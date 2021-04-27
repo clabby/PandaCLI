@@ -37,7 +37,7 @@ const inquirer = require('inquirer');
 const chalk = require('chalk');
 
 const Logger = require('./lib/logger');
-const { decimate } = require('./lib/numberutil');
+const { decimate, formatNumber } = require('./lib/numberutil');
 
 /*
  * Set up Web3
@@ -126,11 +126,11 @@ const run = async (pool, log = true) => {
 
     Logger.info('Reserves: ');
     Logger.info(
-      decimate(new BigNumber(reserves[0]), token0Decimals).toNumber().toFixed(2) +
+      formatNumber(new BigNumber(reserves[0]), token0Decimals) +
       ' ' + chalk.cyan(token0Symbol)
     );
     Logger.info(
-      decimate(new BigNumber(reserves[1]), token1Decimals).toNumber().toFixed(2) +
+      formatNumber(new BigNumber(reserves[1]), token1Decimals) +
       ' ' + chalk.cyan(token1Symbol)
     );
   }
@@ -165,11 +165,11 @@ const run = async (pool, log = true) => {
   if (log) {
     Logger.info(
       'Total Supply (LP): ' +
-      chalk.magenta(decimate(new BigNumber(totalSupply)))
+      chalk.magenta(formatNumber(new BigNumber(totalSupply)))
     );
     Logger.info(
       'Total Locked (LP): ' +
-      chalk.magenta(decimate(new BigNumber(totalLocked)))
+      chalk.magenta(formatNumber(new BigNumber(totalLocked)))
     );
 
     const lockedPercentage = new BigNumber(totalLocked)
@@ -183,13 +183,13 @@ const run = async (pool, log = true) => {
     );
     Logger.info(
       'Total Supply Value: ' +
-      chalk.green('$' + tvl)
+      chalk.green('$' + formatNumber(new BigNumber(tvl), 0))
     );
 
     const lockedUsd = (tvl * (lockedPercentage / 100));
     Logger.info(
       'Total Locked Value: ' +
-      chalk.green('$' + lockedUsd.toFixed(2))
+      chalk.green('$' + formatNumber(new BigNumber(lockedUsd), 0))
     );
 
     const pndaPrice = await pndaPriceUsd();
@@ -219,9 +219,9 @@ const run = async (pool, log = true) => {
             .div(lockedUsd)
     };
 
-    Logger.info('ROI (1 year): ' + chalk.yellow(roi.apy.toNumber() + '%'));
-    Logger.info('ROI (1 month): ' + chalk.yellow(roi.mpy.toNumber() + '%'));
-    Logger.info('ROI (1 week): ' + chalk.yellow(roi.wpy.toNumber() + '%'));
+    Logger.info('ROI (1 year): ' + chalk.yellow(formatNumber(roi.apy, 0) + '%'));
+    Logger.info('ROI (1 month): ' + chalk.yellow(formatNumber(roi.mpy, 0) + '%'));
+    Logger.info('ROI (1 week): ' + chalk.yellow(formatNumber(roi.wpy, 0) + '%'));
 
     prompt();
   } else {
@@ -275,9 +275,7 @@ const getOraclePrice = async (tokenSymbol, log) => {
     Logger.info(
       tokenSymbol + ' Price: ' +
       chalk.green(
-          '$' + decimate(
-          new BigNumber(tokenPrice), tokenDecimals
-          ).toNumber()
+          '$' + formatNumber(new BigNumber(tokenPrice), tokenDecimals)
       )
     );
 

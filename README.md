@@ -35,7 +35,7 @@ Start program
 
 ## Preview
 
-![Preview](https://i.imgur.com/GtTDAt7.gif)
+![Preview](https://i.imgur.com/0igLD1s.gif)
 
 ## License
 
